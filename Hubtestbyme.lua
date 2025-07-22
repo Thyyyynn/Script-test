@@ -1,29 +1,45 @@
--- Thurr's Script Hub GUI
+-- Thurr's Script Hub GUI (with Minimize + 🐱 Floating Button)
 
 local gui = Instance.new("ScreenGui")
 gui.Name = "ScriptHub"
 gui.ResetOnSpawn = false
 gui.Parent = game.CoreGui
 
+-- Main Hub Frame
 local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 350, 0, 280)
-frame.Position = UDim2.new(0.5, -175, 0.5, -140)
+frame.Size = UDim2.new(0, 350, 0, 300)
+frame.Position = UDim2.new(0.5, -175, 0.5, -150)
 frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 frame.Active = true
 frame.Draggable = true
+frame.Visible = true
 frame.Parent = gui
 Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 12)
 
+-- Title
 local title = Instance.new("TextLabel")
 title.Size = UDim2.new(1, 0, 0, 40)
 title.BackgroundTransparency = 1
-title.Text = "🛠️ Script Hub by Thurr"
+title.Text = "🛠️ UnivThHub"
 title.Font = Enum.Font.GothamBold
 title.TextColor3 = Color3.fromRGB(255, 255, 255)
 title.TextScaled = true
 title.Parent = frame
 
--- List of scripts (add more below!)
+-- Scrollable Area
+local scroll = Instance.new("ScrollingFrame")
+scroll.Size = UDim2.new(1, -20, 1, -60)
+scroll.Position = UDim2.new(0, 10, 0, 50)
+scroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+scroll.ScrollBarThickness = 6
+scroll.BackgroundTransparency = 1
+scroll.Parent = frame
+
+local layout = Instance.new("UIListLayout", scroll)
+layout.Padding = UDim.new(0, 10)
+layout.SortOrder = Enum.SortOrder.LayoutOrder
+
+-- Script list
 local scripts = {
 	{
 		Name = "Anti-CoolGUI V2",
@@ -36,20 +52,23 @@ local scripts = {
 	{
 		Name = "Infinite Yield",
 		URL = "https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"
+	},
+	{
+		Name = "GhostHub",
+		URL = "https://raw.githubusercontent.com/GhostPlayer352/Test4/main/GhostHub"
 	}
 }
 
--- Create buttons for each script
-for i, scriptInfo in ipairs(scripts) do
+-- Create buttons
+for _, scriptInfo in ipairs(scripts) do
 	local button = Instance.new("TextButton")
-	button.Size = UDim2.new(0.9, 0, 0, 40)
-	button.Position = UDim2.new(0.05, 0, 0, 50 + ((i - 1) * 50))
+	button.Size = UDim2.new(1, 0, 0, 40)
 	button.Text = scriptInfo.Name
 	button.Font = Enum.Font.Gotham
 	button.TextColor3 = Color3.fromRGB(255, 255, 255)
 	button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 	button.TextScaled = true
-	button.Parent = frame
+	button.Parent = scroll
 	Instance.new("UICorner", button).CornerRadius = UDim.new(0, 8)
 
 	button.MouseButton1Click:Connect(function()
@@ -59,45 +78,12 @@ for i, scriptInfo in ipairs(scripts) do
 	end)
 end
 
--- 🐱 Floating Button (Initially hidden)
-local floatBtn = Instance.new("TextButton")
-floatBtn.Size = UDim2.new(0, 50, 0, 50)
-floatBtn.Position = UDim2.new(0, 20, 0, 200)
-floatBtn.Text = "🐱"
-floatBtn.Font = Enum.Font.Gotham
-floatBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-floatBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-floatBtn.TextScaled = true
-floatBtn.Visible = false
-floatBtn.Draggable = true
-floatBtn.Parent = gui
-Instance.new("UICorner", floatBtn).CornerRadius = UDim.new(1, 0)
-
--- Minimize Button
-local minimizeBtn = Instance.new("TextButton")
-minimizeBtn.Size = UDim2.new(0, 30, 0, 30)
-minimizeBtn.Position = UDim2.new(1, -70, 0, 5)
-minimizeBtn.Text = "-"
-minimizeBtn.Font = Enum.Font.GothamBold
-minimizeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-minimizeBtn.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
-minimizeBtn.TextScaled = true
-minimizeBtn.Parent = frame
-Instance.new("UICorner", minimizeBtn).CornerRadius = UDim.new(0, 6)
-
--- Restore from Floating Button
-floatBtn.MouseButton1Click:Connect(function()
-	frame.Visible = true
-	floatBtn.Visible = false
+-- Update scroll size
+layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+	scroll.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y)
 end)
 
--- Minimize Function
-minimizeBtn.MouseButton1Click:Connect(function()
-	frame.Visible = false
-	floatBtn.Visible = true
-end)
-
--- ❌ Close Button
+-- Close Button
 local closeBtn = Instance.new("TextButton")
 closeBtn.Size = UDim2.new(0, 30, 0, 30)
 closeBtn.Position = UDim2.new(1, -35, 0, 5)
@@ -111,4 +97,40 @@ Instance.new("UICorner", closeBtn).CornerRadius = UDim.new(0, 6)
 
 closeBtn.MouseButton1Click:Connect(function()
 	gui:Destroy()
+end)
+
+-- Minimize Button
+local minimizeBtn = Instance.new("TextButton")
+minimizeBtn.Size = UDim2.new(0, 30, 0, 30)
+minimizeBtn.Position = UDim2.new(1, -70, 0, 5)
+minimizeBtn.Text = "-"
+minimizeBtn.Font = Enum.Font.GothamBold
+minimizeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+minimizeBtn.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+minimizeBtn.TextScaled = true
+minimizeBtn.Parent = frame
+Instance.new("UICorner", minimizeBtn).CornerRadius = UDim.new(0, 6)
+
+-- Floating 🐱 Button
+local catBtn = Instance.new("TextButton")
+catBtn.Size = UDim2.new(0, 50, 0, 50)
+catBtn.Position = UDim2.new(0, 10, 0, 100)
+catBtn.Text = "🐱"
+catBtn.Font = Enum.Font.GothamBold
+catBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+catBtn.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+catBtn.TextScaled = true
+catBtn.Visible = false
+catBtn.Parent = gui
+Instance.new("UICorner", catBtn).CornerRadius = UDim.new(1, 0)
+
+-- Minimize Logic
+minimizeBtn.MouseButton1Click:Connect(function()
+	frame.Visible = false
+	catBtn.Visible = true
+end)
+
+catBtn.MouseButton1Click:Connect(function()
+	frame.Visible = true
+	catBtn.Visible = false
 end)
