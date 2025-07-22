@@ -59,7 +59,45 @@ for i, scriptInfo in ipairs(scripts) do
 	end)
 end
 
--- Close button
+-- 🐱 Floating Button (Initially hidden)
+local floatBtn = Instance.new("TextButton")
+floatBtn.Size = UDim2.new(0, 50, 0, 50)
+floatBtn.Position = UDim2.new(0, 20, 0, 200)
+floatBtn.Text = "🐱"
+floatBtn.Font = Enum.Font.Gotham
+floatBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+floatBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+floatBtn.TextScaled = true
+floatBtn.Visible = false
+floatBtn.Draggable = true
+floatBtn.Parent = gui
+Instance.new("UICorner", floatBtn).CornerRadius = UDim.new(1, 0)
+
+-- Minimize Button
+local minimizeBtn = Instance.new("TextButton")
+minimizeBtn.Size = UDim2.new(0, 30, 0, 30)
+minimizeBtn.Position = UDim2.new(1, -70, 0, 5)
+minimizeBtn.Text = "-"
+minimizeBtn.Font = Enum.Font.GothamBold
+minimizeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+minimizeBtn.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+minimizeBtn.TextScaled = true
+minimizeBtn.Parent = frame
+Instance.new("UICorner", minimizeBtn).CornerRadius = UDim.new(0, 6)
+
+-- Restore from Floating Button
+floatBtn.MouseButton1Click:Connect(function()
+	frame.Visible = true
+	floatBtn.Visible = false
+end)
+
+-- Minimize Function
+minimizeBtn.MouseButton1Click:Connect(function()
+	frame.Visible = false
+	floatBtn.Visible = true
+end)
+
+-- ❌ Close Button
 local closeBtn = Instance.new("TextButton")
 closeBtn.Size = UDim2.new(0, 30, 0, 30)
 closeBtn.Position = UDim2.new(1, -35, 0, 5)
